@@ -1,0 +1,35 @@
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.models.Lancamento;
+import com.example.demo.services.LancamentoService;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Service
+public class ConsolidadoDiarioService {
+    private final LancamentoService lancamentoService;
+
+    public ConsolidadoDiarioService(LancamentoService lancamentoService) {
+        this.lancamentoService = lancamentoService;
+    }
+
+    public BigDecimal obterSaldoDiario(LocalDate data) {
+        List<Lancamento> lancamentosDoDia = lancamentoService.listarLancamentos()
+                .stream()
+                .filter(lancamento -> lancamento.getData().equals(data))
+                .collect(Collectors.toList());
+
+        BigDecimal saldoDiario = BigDecimal.ZERO;
+        for (Lancamento lancamento : lancamentosDoDia)

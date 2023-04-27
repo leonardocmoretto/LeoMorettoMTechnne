@@ -1,0 +1,24 @@
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
+public class Lancamento {
+    private Long id;
+    private LocalDate data;
+    private String descricao;
+    private BigDecimal valor;
+    private TipoLancamento tipo;
+    // getters e setters
+}
+
+public enum TipoLancamento {
+    DEBITO, CREDITO
+}

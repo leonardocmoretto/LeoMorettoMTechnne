@@ -1,0 +1,53 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.exceptions.NotFoundException;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Service
+public class LancamentoService {
+    private final List<Lancamento> lancamentos = new ArrayList<>();
+
+    public Lancamento adicionarLancamento(Lancamento lancamento) {
+        lancamento.setId((long) (lancamentos.size() + 1));
+        lancamentos.add(lancamento);
+        return lancamento;
+    }
+
+    public List<Lancamento> listarLancamentos() {
+        return lancamentos;
+    }
+
+    public Lancamento obterLancamento(Long id) {
+        return lancamentos.stream()
+                .filter(lancamento -> lancamento.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Lancamento não encontrado"));
+    }
+
+    public Lancamento atualizarLancamento(Long id, Lancamento lancamentoAtualizado) {
+        Lancamento lancamentoExistente = obterLancamento(id);
+        lancamentoExistente.setData(lancamentoAtualizado.getData());
+        lancamentoExistente.setDescricao(lancamentoAtualizado.getDescricao());
+        lancamentoExistente.setValor(lancamentoAtualizado.getValor());
+        lancamentoExistente.setTipo(lancamentoAtualizado.getTipo());
+        return lancamentoExistente;
+    }
+
+    public void excluirLancamento(Long id) {
+        Lancamento lancamentoExistente = obterLancamento(id);
+        lancamentos.remove(lancamentoExistente);
+    }
+}

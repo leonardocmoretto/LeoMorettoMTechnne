@@ -1,0 +1,31 @@
+@RestController
+@RequestMapping("/lancamentos")
+public class LancamentoController {
+    
+    private final LancamentoService lancamentoService;
+    
+    public LancamentoController(LancamentoService lancamentoService) {
+        this.lancamentoService = lancamentoService;
+    }
+    
+    @PostMapping
+    public ResponseEntity<Lancamento> criarLancamento(@RequestBody Lancamento lancamento) {
+        Lancamento lancamentoCriado = lancamentoService.criarLancamento(lancamento);
+        return ResponseEntity.created(URI.create("/lancamentos/" + lancamentoCriado.getId())).body(lancamentoCriado);
+    }
+    
+    @GetMapping
+    public List<Lancamento> buscarLancamentos() {
+        return lancamentoService.buscarLancamentos();
+    }
+}
+
+@PutMapping("/{id}")
+public ResponseEntity<Lancamento> atualizarLancamento(@PathVariable Long id, @RequestBody Lancamento lancamentoAtualizado) {
+    Lancamento lancamento = lancamentoService.atualizarLancamento(id, lancamentoAtualizado);
+    if (lancamento != null) {
+        return ResponseEntity.ok(lancamento);
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+}
